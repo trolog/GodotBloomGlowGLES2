@@ -1,0 +1,105 @@
+[gd_scene load_steps=16 format=2]
+
+[ext_resource path="res://player.gd" type="Script" id=1]
+[ext_resource path="res://Sprites/player1.png" type="Texture" id=2]
+[ext_resource path="res://Sprites/player-Emission1.png" type="Texture" id=3]
+[ext_resource path="res://Sprites/player-Emission2.png" type="Texture" id=4]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+uniform sampler2D emission_teture;
+uniform vec4 glow_color : hint_color = vec4(1.0);
+
+void fragment()
+{
+	vec4 current_color = texture(TEXTURE,UV); // what's our current sprite pixel
+	vec4 emission_color = texture(emission_teture,UV); // what's our current emission pixel
+	
+	if(emission_color.r > 0f) // check if we're not black in the emission color.
+	{
+		COLOR = (emission_color + glow_color) // add brightness corrosponding with the emission pixel
+	}
+	else
+	{
+		COLOR = current_color; // we arent over an emission pixel leave alone
+	}
+}"
+custom_defines = ""
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
+shader_param/glow_color = Color( 0, 0.647059, 1, 1 )
+shader_param/emission_teture = ExtResource( 3 )
+
+[sub_resource type="AtlasTexture" id=3]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 0, 0, 100, 50 )
+
+[sub_resource type="AtlasTexture" id=4]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 100, 0, 100, 50 )
+
+[sub_resource type="AtlasTexture" id=5]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 200, 0, 100, 50 )
+
+[sub_resource type="AtlasTexture" id=6]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 300, 0, 100, 50 )
+
+[sub_resource type="AtlasTexture" id=7]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 400, 0, 100, 50 )
+
+[sub_resource type="AtlasTexture" id=8]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 500, 0, 100, 50 )
+
+[sub_resource type="AtlasTexture" id=9]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 600, 0, 100, 50 )
+
+[sub_resource type="SpriteFrames" id=10]
+animations = [ {
+"frames": [ SubResource( 3 ), SubResource( 4 ), SubResource( 5 ), SubResource( 6 ), SubResource( 7 ), SubResource( 8 ), SubResource( 9 ) ],
+"loop": true,
+"name": "default",
+"speed": 10.0
+} ]
+
+[sub_resource type="Environment" id=11]
+background_mode = 4
+glow_enabled = true
+glow_intensity = 2.98
+glow_strength = 0.93
+glow_blend_mode = 0
+glow_hdr_threshold = 0.6
+
+[node name="main" type="Node2D"]
+
+[node name="player" type="Node2D" parent="."]
+position = Vector2( 129.163, 57.0498 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
+run_emission_texture1 = ExtResource( 2 )
+run_emission_texture = ExtResource( 4 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="player"]
+material = SubResource( 2 )
+frames = SubResource( 10 )
+frame = 3
+playing = true
+
+[node name="Sprite" type="Sprite" parent="player/AnimatedSprite"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 11 )
